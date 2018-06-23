@@ -18,15 +18,17 @@ package me.priyesh.chroma
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.graphics.Color
 import android.os.Bundle
-import android.support.annotation.ColorInt
-import android.support.v4.app.DialogFragment
+import androidx.annotation.ColorInt
+import androidx.fragment.app.DialogFragment
 import android.view.WindowManager
 import me.priyesh.chroma.internal.ChromaView
 import kotlin.properties.Delegates
 
-class ChromaDialog constructor() : DialogFragment() {
+class ChromaDialog constructor() : androidx.fragment.app.DialogFragment() {
 
   companion object {
     private val ArgInitialColor = "arg_initial_color"
@@ -81,14 +83,14 @@ class ChromaDialog constructor() : DialogFragment() {
   override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
     chromaView = if (savedInstanceState == null) {
       ChromaView(
-          arguments.getInt(ArgInitialColor),
-          ColorMode.fromName(arguments.getString(ArgColorModeName)),
-          context)
+          arguments?.getInt(ArgInitialColor) ?: Color.BLACK,
+              arguments?.getString(ArgColorModeName)?.let { ColorMode.fromName(it) } ?: ColorMode.RGB,
+          context as Context)
     } else {
       ChromaView(
           savedInstanceState.getInt(ArgInitialColor, ChromaView.DefaultColor),
           ColorMode.fromName(savedInstanceState.getString(ArgColorModeName)),
-          context
+          context as Context
       )
     }
 
@@ -115,8 +117,8 @@ class ChromaDialog constructor() : DialogFragment() {
     }
   }
 
-  override fun onSaveInstanceState(outState: Bundle?) {
-    outState?.putAll(makeArgs(chromaView.currentColor, chromaView.colorMode))
+  override fun onSaveInstanceState(outState: Bundle) {
+    outState.putAll(makeArgs(chromaView.currentColor, chromaView.colorMode))
     super.onSaveInstanceState(outState)
   }
 

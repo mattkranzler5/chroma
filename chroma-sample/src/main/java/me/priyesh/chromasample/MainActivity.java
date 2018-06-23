@@ -19,16 +19,16 @@ package me.priyesh.chromasample;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import me.priyesh.chroma.ChromaDialog;
 import me.priyesh.chroma.ColorMode;
 import me.priyesh.chroma.ColorSelectListener;
@@ -39,16 +39,27 @@ public class MainActivity extends AppCompatActivity {
   private static final String KEY_COLOR = "extra_color";
   private static final String KEY_COLOR_MODE = "extra_color_mode";
 
-  @Bind(R.id.toolbar) Toolbar mToolbar;
-  @Bind(R.id.text_view) TextView mColorTextView;
-  @Bind(R.id.color_mode_spinner) Spinner mColorModeSpinner;
+  private Toolbar mToolbar;
+  private TextView mColorTextView;
+  private Spinner mColorModeSpinner;
+  private FloatingActionButton mFab;
 
   private int mColor;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    ButterKnife.bind(this);
+    mToolbar = findViewById(R.id.toolbar);
+    mColorTextView = findViewById(R.id.text_view);
+    mColorModeSpinner = findViewById(R.id.color_mode_spinner);
+    mFab = findViewById(R.id.fab);
+
+    mFab.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        showColorPickerDialog();
+      }
+    });
 
     setSupportActionBar(mToolbar);
     int statusBarHeight = statusBarHeight();
@@ -77,10 +88,6 @@ public class MainActivity extends AppCompatActivity {
     outState.putInt(KEY_COLOR, mColor);
     outState.putString(KEY_COLOR_MODE, mColorModeSpinner.getSelectedItem().toString());
     super.onSaveInstanceState(outState);
-  }
-
-  @OnClick(R.id.fab) void onFabClick() {
-    showColorPickerDialog();
   }
 
   private void showColorPickerDialog() {

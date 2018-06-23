@@ -16,7 +16,7 @@
 
 package me.priyesh.chroma
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 interface ColorSelectListener {
   fun onColorSelected(@ColorInt color: Int)
